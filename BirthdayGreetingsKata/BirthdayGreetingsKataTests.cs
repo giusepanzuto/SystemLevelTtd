@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
@@ -42,9 +43,8 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
         [Fact]
         public async Task OneBithday()
         {
-            File.WriteAllLines(employeesFilename, new []
+            PrepareEmployeeFile(new[]
             {
-                "last_name, first_name, date_of_birth, email",
                 "Capone, Al, 1951-10-08, al.capone@acme.com",
                 "Escobar, Pablo, 1975-09-11, pablo.escobar@acme.com",
                 "Wick, John, 1987-09-11, john.wick@acme.com"
@@ -61,15 +61,14 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
             Assert.Equal(fromAddress, msg.From);
             Assert.Equal("pablo.escobar@acme.com", msg.To);
             Assert.Equal("Happy Birthday!", msg.Subject);
-            Assert.Equal("Happy Birthday, dear Pablo!"+ NL, msg.Body);
+            Assert.Equal("Happy Birthday, dear Pablo!" + NL, msg.Body);
         }
 
         [Fact]
         public async Task NoBithday()
         {
-            File.WriteAllLines(employeesFilename, new[]
+            PrepareEmployeeFile(new[]
             {
-                "last_name, first_name, date_of_birth, email",
                 "Capone, Al, 1951-10-08, al.capone@acme.com",
                 "Escobar, Pablo, 1975-09-11, pablo.escobar@acme.com",
                 "Wick, John, 1987-09-11, john.wick@acme.com"
@@ -81,6 +80,12 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
             var serverInfo = await _smtpServer.GetServerInfo();
 
             Assert.Equal(0, serverInfo.MailReceived);
+        }
+
+        private static void PrepareEmployeeFile(IEnumerable<string> contents)
+        {
+            const string header = "last_name, first_name, date_of_birth, email";
+            File.WriteAllLines(employeesFilename, new[] { header }.Concat(contents));
         }
     }
 
@@ -103,16 +108,16 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
         {
             var allLines = File.ReadAllLines(employeesFilename).Skip(1).ToList();
 
-            var pablo = allLines[1];
-            var pabloParts = pablo.Split(',').Select(v => v.Trim()).ToList();
+            var employee = allLines[1];
+            var employeeParts = employee.Split(',').Select(v => v.Trim()).ToList();
 
-            var birthday = DateTime.Parse(pabloParts[2]);
+            var birthday = DateTime.Parse(employeeParts[2]);
 
             if (birthday.Day == today.Day && birthday.Month == today.Month)
             {
-                var to = pabloParts[3];
+                var to = employeeParts[3];
                 var subject = "Happy Birthday!";
-                var name = pabloParts[1];
+                var name = employeeParts[1];
                 var body = $"Happy Birthday, dear {name}!";
 
                 using (var smtpClient = new SmtpClient(smtpHost, smtpPort))
