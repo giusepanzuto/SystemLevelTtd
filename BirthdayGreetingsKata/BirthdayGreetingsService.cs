@@ -24,27 +24,24 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
         {
             var allLines = File.ReadAllLines(employeesFilename).Skip(1).ToList();
 
-            foreach (var employee in allLines)
+            foreach (var employeeLine in allLines)
             {
-                var employeeParts = employee.Split(',').Select(v => v.Trim()).ToList();
-                var birthday = DateTime.Parse(employeeParts[2]);
+                var employeeParts = employeeLine.Split(',').Select(v => v.Trim()).ToList();
+                var dateOfBirth = DateTime.Parse(employeeParts[2]);
+                var name = employeeParts[1];
+                var to = employeeParts[3];
 
-                if (IsBirthday(today, birthday))
+                var employee = new Employee(name: employeeParts[1], surname: employeeParts[0], dateOfBirth: dateOfBirth, email: employeeParts[3]);
+
+                if (employee.IsBirthday(today))
                 {
-                    var to = employeeParts[3];
                     var subject = "Happy Birthday!";
-                    var name = employeeParts[1];
                     var body = $"Happy Birthday, dear {name}!";
 
                     using (var smtpClient = new SmtpClient(smtpHost, smtpPort))
                         smtpClient.Send(from, to, subject, body);
                 }
             }
-        }
-
-        private static bool IsBirthday(DateTime today, DateTime birthday)
-        {
-            return birthday.Day == today.Day && birthday.Month == today.Month;
         }
     }
 }
