@@ -47,7 +47,7 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
             {
                 "Capone, Al, 1951-10-08, al.capone@acme.com",
                 "Escobar, Pablo, 1975-09-11, pablo.escobar@acme.com",
-                "Wick, John, 1987-09-11, john.wick@acme.com"
+                "Wick, John, 1987-02-11, john.wick@acme.com"
             });
 
             var service = new BirthdayGreetingsService(employeesFilename, SmtpHost, SmtpPort, fromAddress);
@@ -82,6 +82,24 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
             Assert.Equal(0, serverInfo.MailReceived);
         }
 
+        [Fact]
+        public async Task ManyBithdays()
+        {
+            PrepareEmployeeFile(new[]
+            {
+                "Capone, Al, 1951-10-08, al.capone@acme.com",
+                "Escobar, Pablo, 1975-09-11, pablo.escobar@acme.com",
+                "Wick, John, 1987-09-11, john.wick@acme.com"
+            });
+
+            var service = new BirthdayGreetingsService(employeesFilename, SmtpHost, SmtpPort, fromAddress);
+            service.SendGreetings(new DateTime(2019, 9, 11));
+
+            var serverInfo = await _smtpServer.GetServerInfo();
+
+            Assert.Equal(2, serverInfo.MailReceived);
+        }
+
         private static void PrepareEmployeeFile(IEnumerable<string> contents)
         {
             const string header = "last_name, first_name, date_of_birth, email";
@@ -108,21 +126,22 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
         {
             var allLines = File.ReadAllLines(employeesFilename).Skip(1).ToList();
 
-            var employee = allLines[1];
-            var employeeParts = employee.Split(',').Select(v => v.Trim()).ToList();
-
-            var birthday = DateTime.Parse(employeeParts[2]);
-
-            if (birthday.Day == today.Day && birthday.Month == today.Month)
+            foreach (var employee in allLines)
             {
-                var to = employeeParts[3];
-                var subject = "Happy Birthday!";
-                var name = employeeParts[1];
-                var body = $"Happy Birthday, dear {name}!";
+                var employeeParts = employee.Split(',').Select(v => v.Trim()).ToList();
+                var birthday = DateTime.Parse(employeeParts[2]);
 
-                using (var smtpClient = new SmtpClient(smtpHost, smtpPort))
-                    smtpClient.Send(from, to, subject, body);
+                if (birthday.Day == today.Day && birthday.Month == today.Month)
+                {
+                    var to = employeeParts[3];
+                    var subject = "Happy Birthday!";
+                    var name = employeeParts[1];
+                    var body = $"Happy Birthday, dear {name}!";
 
+                    using (var smtpClient = new SmtpClient(smtpHost, smtpPort))
+                        smtpClient.Send(from, to, subject, body);
+
+                }
             }
         }
     }
