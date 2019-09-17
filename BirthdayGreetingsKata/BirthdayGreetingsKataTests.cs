@@ -9,10 +9,12 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
 {
     public class BirthdayGreetingsKataTests : IDisposable
     {
+        private const string employeesFilename = "test-data.csv";
         private const int SmtpPort = 1030;
         private const int ApiPort = 1031;
         private const string SmtpHost = "localhost";
         private const string NL = "\r\n";
+        private const string fromAddress = "greetings@acme.com";
         readonly LocalSmtpServer _smtpServer;
 
         public BirthdayGreetingsKataTests()
@@ -40,7 +42,6 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
         [Fact]
         public async Task OneBithday()
         {
-            const string employeesFilename = "test-data.csv";
             File.WriteAllLines(employeesFilename, new []
             {
                 "last_name, first_name, date_of_birth, email",
@@ -49,7 +50,7 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
                 "Wick, John, 1987-09-11, john.wick@acme.com"
             });
 
-            var service = new BirthdayGreetingsService(employeesFilename, SmtpHost, SmtpPort, "greetings@acme.com");
+            var service = new BirthdayGreetingsService(employeesFilename, SmtpHost, SmtpPort, fromAddress);
             service.SendGreetings(new DateTime(2019, 9, 11));
 
             var serverInfo = await _smtpServer.GetServerInfo();
@@ -57,10 +58,29 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
             Assert.Equal(1, serverInfo.MailReceived);
 
             var msg = serverInfo.Messages[0];
-            Assert.Equal("greetings@acme.com", msg.From);
+            Assert.Equal(fromAddress, msg.From);
             Assert.Equal("pablo.escobar@acme.com", msg.To);
             Assert.Equal("Happy Birthday!", msg.Subject);
             Assert.Equal("Happy Birthday, dear Pablo!"+ NL, msg.Body);
+        }
+
+        [Fact]
+        public async Task NoBithday()
+        {
+            File.WriteAllLines(employeesFilename, new[]
+            {
+                "last_name, first_name, date_of_birth, email",
+                "Capone, Al, 1951-10-08, al.capone@acme.com",
+                "Escobar, Pablo, 1975-09-11, pablo.escobar@acme.com",
+                "Wick, John, 1987-09-11, john.wick@acme.com"
+            });
+
+            var service = new BirthdayGreetingsService(employeesFilename, SmtpHost, SmtpPort, fromAddress);
+            service.SendGreetings(new DateTime(2019, 2, 26));
+
+            var serverInfo = await _smtpServer.GetServerInfo();
+
+            Assert.Equal(0, serverInfo.MailReceived);
         }
     }
 
@@ -84,15 +104,21 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
             var allLines = File.ReadAllLines(employeesFilename).Skip(1).ToList();
 
             var pablo = allLines[1];
-            var pabloParts = pablo.Split(',');
+            var pabloParts = pablo.Split(',').Select(v => v.Trim()).ToList();
 
-            var to = pabloParts[3];
-            var subject = "Happy Birthday!";
-            var name = pabloParts[1].Trim();
-            var body = $"Happy Birthday, dear {name}!";
+            var birthday = DateTime.Parse(pabloParts[2]);
 
-            using (var smtpClient = new SmtpClient(smtpHost, smtpPort))
-                smtpClient.Send(from, to, subject, body);
+            if (birthday.Day == today.Day && birthday.Month == today.Month)
+            {
+                var to = pabloParts[3];
+                var subject = "Happy Birthday!";
+                var name = pabloParts[1];
+                var body = $"Happy Birthday, dear {name}!";
+
+                using (var smtpClient = new SmtpClient(smtpHost, smtpPort))
+                    smtpClient.Send(from, to, subject, body);
+
+            }
         }
     }
 }
