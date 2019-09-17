@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using Xunit;
@@ -39,7 +40,8 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
         [Fact]
         public async Task OneBithday()
         {
-            File.WriteAllLines("test-data.csv", new []
+            const string employeesFilename = "test-data.csv";
+            File.WriteAllLines(employeesFilename, new []
             {
                 "last_name, first_name, date_of_birth, email",
                 "Capone, Al, 1951-10-08, al.capone@acme.com",
@@ -47,7 +49,7 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
                 "Wick, John, 1987-09-11, john.wick@acme.com"
             });
 
-            var service = new BirthdayGreetingsService(SmtpHost, SmtpPort, "greetings@acme.com");
+            var service = new BirthdayGreetingsService(employeesFilename, SmtpHost, SmtpPort, "greetings@acme.com");
             service.SendGreetings(new DateTime(2019, 9, 11));
 
             var serverInfo = await _smtpServer.GetServerInfo();
@@ -65,11 +67,13 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
     public class BirthdayGreetingsService
     {
         private readonly string from;
+        private readonly string employeesFilename;
         private readonly string smtpHost;
         private readonly int smtpPort;
 
-        public BirthdayGreetingsService(string smtpHost, int smtpPort, string @from)
+        public BirthdayGreetingsService(string employeesFilename, string smtpHost, int smtpPort, string from)
         {
+            this.employeesFilename = employeesFilename;
             this.smtpHost = smtpHost;
             this.smtpPort = smtpPort;
             this.from = from;
@@ -77,9 +81,15 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
 
         public void SendGreetings(DateTime today)
         {
-            var to = "pablo.escobar@acme.com";
+            var allLines = File.ReadAllLines(employeesFilename).Skip(1).ToList();
+
+            var pablo = allLines[1];
+            var pabloParts = pablo.Split(',');
+
+            var to = pabloParts[3];
             var subject = "Happy Birthday!";
-            var body = "Happy Birthday, dear Pablo!";
+            var name = pabloParts[1].Trim();
+            var body = $"Happy Birthday, dear {name}!";
 
             using (var smtpClient = new SmtpClient(smtpHost, smtpPort))
                 smtpClient.Send(from, to, subject, body);
