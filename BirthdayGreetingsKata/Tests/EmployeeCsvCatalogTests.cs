@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
+using SystemLevelTtd.BirthdayGreetingsKata.Adapters;
 using Xunit;
 
 namespace SystemLevelTtd.BirthdayGreetingsKata.Tests

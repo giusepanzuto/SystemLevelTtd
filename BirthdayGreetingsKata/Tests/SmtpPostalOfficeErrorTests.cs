@@ -1,4 +1,5 @@
 ﻿using System.Net.Mail;
+using SystemLevelTtd.BirthdayGreetingsKata.Adapters;
 using Xunit;
 
 namespace SystemLevelTtd.BirthdayGreetingsKata.Tests

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
+using SystemLevelTtd.BirthdayGreetingsKata.Adapters;
+using SystemLevelTtd.support;
 using Xunit;
 
 namespace SystemLevelTtd.BirthdayGreetingsKata.Tests

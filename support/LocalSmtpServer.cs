@@ -1,12 +1,12 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
-namespace SystemLevelTtd.BirthdayGreetingsKata
+namespace SystemLevelTtd.support
 {
     public class LocalSmtpServer
     {

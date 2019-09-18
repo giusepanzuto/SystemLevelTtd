@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace SystemLevelTtd.BirthdayGreetingsKata
+namespace SystemLevelTtd.BirthdayGreetingsKata.Adapters
 {
     public class EmployeeCsvCatalog : IEmployeeCatalog
     {

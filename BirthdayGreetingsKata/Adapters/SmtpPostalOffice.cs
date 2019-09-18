@@ -1,6 +1,6 @@
 ﻿using System.Net.Mail;
 
-namespace SystemLevelTtd.BirthdayGreetingsKata
+namespace SystemLevelTtd.BirthdayGreetingsKata.Adapters
 {
    public class SmtpPostalOffice : IPostalOffice
     {
