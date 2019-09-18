@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Xunit;
 
 namespace SystemLevelTtd.BirthdayGreetingsKata.Tests
@@ -24,8 +22,25 @@ namespace SystemLevelTtd.BirthdayGreetingsKata.Tests
             var employees = employeeCsvCatalog.GetAll();
 
             Assert.Equal(
-                new[] { new Employee("Al", "Capone", BirthDate.From("1951-10-08"), "al.capone@acme.com") }, 
+                new[] { new Employee("Al", "Capone", BirthDate.From("1951-10-08"), "al.capone@acme.com") },
                 employees);
+        }
+
+        [Fact]
+        public void ManyEmployee()
+        {
+            PrepareEmployeeFile(new[]
+            {
+                "Capone, Al, 1951-10-08, al.capone@acme.com",
+                "Escobar, Pablo, 1975-09-11, pablo.escobar@acme.com",
+                "Wick, John, 1987-02-11, john.wick@acme.com"
+            });
+
+            var employeeCsvCatalog = new EmployeeCsvCatalog(employeesFilename);
+
+            var employees = employeeCsvCatalog.GetAll();
+
+            Assert.Equal(3, employees.Count);
         }
 
         private static void PrepareEmployeeFile(IEnumerable<string> contents)
