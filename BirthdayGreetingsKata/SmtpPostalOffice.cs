@@ -2,7 +2,7 @@
 
 namespace SystemLevelTtd.BirthdayGreetingsKata
 {
-   public class SmtpPostalOffice : ISmtpPostalOffice
+   public class SmtpPostalOffice : IPostalOffice
     {
         private readonly string smtpHost;
         private readonly int smtpPort;
@@ -15,7 +15,7 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
             this.from = from;
         }
 
-        public void SendMail(string name, string to)
+        public void Send(string name, string to)
         {
             var subject = "Happy Birthday!";
             var body = $"Happy Birthday, dear {name}!";

@@ -14,7 +14,7 @@ namespace SystemLevelTtd.BirthdayGreetingsKata.Tests
         {
             var postalOffice = new SmtpPostalOffice(SmtpHost, SmtpPort, fromAddress);
 
-            var ex = Record.Exception(() => postalOffice.SendMail("Pippo", "pippo@a.com"));
+            var ex = Record.Exception(() => postalOffice.Send("Pippo", "pippo@a.com"));
 
             Assert.IsType<SmtpException>(ex);
         }

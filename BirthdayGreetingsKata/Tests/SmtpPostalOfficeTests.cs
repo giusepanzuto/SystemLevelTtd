@@ -29,7 +29,7 @@ namespace SystemLevelTtd.BirthdayGreetingsKata.Tests
         {
             var postalOffice = new SmtpPostalOffice(SmtpHost, SmtpPort, fromAddress);
 
-            postalOffice.SendMail("Pippo", "pippo@a.com");
+            postalOffice.Send("Pippo", "pippo@a.com");
 
             var serverInfo = await _smtpServer.GetServerInfo();
             Assert.Equal(1, serverInfo.MailReceived);

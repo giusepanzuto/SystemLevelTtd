@@ -6,12 +6,12 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
 {
     public class BirthdayGreetingsService
     {
-        private readonly ISmtpPostalOffice smtpPostalOffice;
+        private readonly IPostalOffice _postalOffice;
         private readonly IEmployeeCatalog _employeeCatalog;
 
-        public BirthdayGreetingsService(ISmtpPostalOffice postalOffice, IEmployeeCatalog employeeCatalog)
+        public BirthdayGreetingsService(IPostalOffice postalOffice, IEmployeeCatalog employeeCatalog)
         {
-            smtpPostalOffice = postalOffice;
+            _postalOffice = postalOffice;
             _employeeCatalog = employeeCatalog;
         }
 
@@ -19,7 +19,7 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
             _employeeCatalog.GetAll()
                 .Where(e => e.IsBirthday(today))
                 .ToList()
-                .ForEach(e => smtpPostalOffice.SendMail(e.Name, e.Email));
+                .ForEach(e => _postalOffice.Send(e.Name, e.Email));
     }
 
     public interface IEmployeeCatalog
@@ -27,9 +27,9 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
         List<Employee> GetAll();
     }
 
-    public interface ISmtpPostalOffice
+    public interface IPostalOffice
     {
-        void SendMail(string name, string to);
+        void Send(string name, string to);
     }
 
 }
