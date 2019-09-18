@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
-namespace SystemLevelTtd.BirthdayGreetingsKata
+namespace SystemLevelTtd.BirthdayGreetingsKata.Tests
 {
     public class EmployeeTests
     {

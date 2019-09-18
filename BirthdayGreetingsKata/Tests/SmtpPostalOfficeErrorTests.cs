@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Mail;
+﻿using System.Net.Mail;
 using Xunit;
 
-namespace SystemLevelTtd.BirthdayGreetingsKata
+namespace SystemLevelTtd.BirthdayGreetingsKata.Tests
 {
     public class SmtpPostalOfficeErrorTests
     {

@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace SystemLevelTtd.BirthdayGreetingsKata
+namespace SystemLevelTtd.BirthdayGreetingsKata.Tests
 {
     public class SmtpPostalOfficeTests : IDisposable
     {
@@ -40,7 +38,7 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
             Assert.Equal(MailInfo(name: "Pippo", to: "pippo@a.com"), msg);
         }
 
-        private static MailInfo MailInfo(string name, string to) => 
+        private static MailInfo MailInfo(string name, string to) =>
             new MailInfo(
                 @from: fromAddress,
                 to: to,

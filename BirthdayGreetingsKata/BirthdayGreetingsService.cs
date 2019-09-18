@@ -1,36 +1,24 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
 
 namespace SystemLevelTtd.BirthdayGreetingsKata
 {
     public class BirthdayGreetingsService
     {
-        private readonly string from;
         private readonly SmtpPostalOffice smtpPostalOffice;
-        private readonly string employeesFilename;
+        private readonly EmployeeCsvCatalog employeeCsvCatalog;
 
         public BirthdayGreetingsService(string employeesFilename, string smtpHost, int smtpPort, string from)
         {
-            this.employeesFilename = employeesFilename;
-            this.from = from;
-
-            this.smtpPostalOffice = new SmtpPostalOffice(smtpHost, smtpPort, from);
+            smtpPostalOffice = new SmtpPostalOffice(smtpHost, smtpPort, from);
+            employeeCsvCatalog = new EmployeeCsvCatalog(employeesFilename);
         }
 
         public void SendGreetings(DateTime today)
         {
-            var allLines = File.ReadAllLines(employeesFilename).Skip(1).ToList();
+            var employees = employeeCsvCatalog.GetAll();
 
-            foreach (var employeeLine in allLines)
+            foreach (var employee in employees)
             {
-                var employeeParts = employeeLine.Split(',').Select(v => v.Trim()).ToList();
-                var dateOfBirth = DateTime.Parse(employeeParts[2]);
-                var name = employeeParts[1];
-                var to = employeeParts[3];
-
-                var employee = new Employee(name: employeeParts[1], surname: employeeParts[0], birthDate: new BirthDate(dateOfBirth), email: employeeParts[3]);
-
                 if (employee.IsBirthday(today))
                 {
                     smtpPostalOffice.SendMail(employee.Name, employee.Email);

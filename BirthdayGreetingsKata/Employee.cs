@@ -2,7 +2,7 @@
 
 namespace SystemLevelTtd.BirthdayGreetingsKata
 {
-    internal class Employee
+    public class Employee
     {
         public Employee(string name, string surname, BirthDate birthDate, string email)
         {
