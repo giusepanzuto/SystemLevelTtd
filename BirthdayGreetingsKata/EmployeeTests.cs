@@ -10,7 +10,8 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
         [Fact]
         public void GoodDay()
         {
-            var employee = new Employee("", "", new DateTime(1980, 2, 14), "");
+            DateTime dateOfBirth = new DateTime(1980, 2, 14);
+            var employee = new Employee("", "", new BirthDate(dateOfBirth), "");
 
             Assert.True(employee.IsBirthday(new DateTime(2019, 2, 14)));
         }
@@ -18,7 +19,8 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
         [Fact]
         public void BadDay()
         {
-            var employee = new Employee("", "", new DateTime(1980, 2, 14), "");
+            DateTime dateOfBirth = new DateTime(1980, 2, 14);
+            var employee = new Employee("", "", new BirthDate(dateOfBirth), "");
 
             Assert.False(employee.IsBirthday(new DateTime(2019, 5, 10)));
         }

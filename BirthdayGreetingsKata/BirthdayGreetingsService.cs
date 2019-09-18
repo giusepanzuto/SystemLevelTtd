@@ -31,7 +31,7 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
                 var name = employeeParts[1];
                 var to = employeeParts[3];
 
-                var employee = new Employee(name: employeeParts[1], surname: employeeParts[0], dateOfBirth: dateOfBirth, email: employeeParts[3]);
+                var employee = new Employee(name: employeeParts[1], surname: employeeParts[0], birthDate: new BirthDate(dateOfBirth), email: employeeParts[3]);
 
                 if (employee.IsBirthday(today))
                 {
