@@ -1,23 +1,35 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SystemLevelTtd.BirthdayGreetingsKata
 {
     public class BirthdayGreetingsService
     {
-        private readonly SmtpPostalOffice smtpPostalOffice;
-        private readonly EmployeeCsvCatalog employeeCsvCatalog;
+        private readonly ISmtpPostalOffice smtpPostalOffice;
+        private readonly IEmployeeCatalog _employeeCatalog;
 
-        public BirthdayGreetingsService(SmtpPostalOffice postalOffice, EmployeeCsvCatalog employeeCatalog)
+        public BirthdayGreetingsService(ISmtpPostalOffice postalOffice, IEmployeeCatalog employeeCatalog)
         {
             smtpPostalOffice = postalOffice;
-            employeeCsvCatalog = employeeCatalog;
+            _employeeCatalog = employeeCatalog;
         }
 
         public void SendGreetings(DateTime today) => 
-            employeeCsvCatalog.GetAll()
+            _employeeCatalog.GetAll()
                 .Where(e => e.IsBirthday(today))
                 .ToList()
                 .ForEach(e => smtpPostalOffice.SendMail(e.Name, e.Email));
     }
+
+    public interface IEmployeeCatalog
+    {
+        List<Employee> GetAll();
+    }
+
+    public interface ISmtpPostalOffice
+    {
+        void SendMail(string name, string to);
+    }
+
 }

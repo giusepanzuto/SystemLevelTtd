@@ -2,7 +2,7 @@
 
 namespace SystemLevelTtd.BirthdayGreetingsKata
 {
-    public class SmtpPostalOffice
+   public class SmtpPostalOffice : ISmtpPostalOffice
     {
         private readonly string smtpHost;
         private readonly int smtpPort;

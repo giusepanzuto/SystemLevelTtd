@@ -5,9 +5,9 @@ using System.Linq;
 
 namespace SystemLevelTtd.BirthdayGreetingsKata
 {
-    public class EmployeeCsvCatalog
+    public class EmployeeCsvCatalog : IEmployeeCatalog
     {
-        private string employeesFilename;
+        private readonly string employeesFilename;
 
         public EmployeeCsvCatalog(string employeesFilename)
         {
