@@ -23,5 +23,13 @@ namespace SystemLevelTtd.BirthdayGreetingsKata.Tests
             Assert.False(employee.IsBirthday(new DateTime(2019, 5, 10)));
         }
 
+        [Fact]
+        public void Equality()
+        {
+            Assert.Equal(
+                new Employee("a", "b", BirthDate.From("1980-02-14"), "c"),
+                new Employee("a", "b", BirthDate.From("1980-02-14"), "c")
+            );
+        }
     }
 }
