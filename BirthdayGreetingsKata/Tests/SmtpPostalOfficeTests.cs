@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace SystemLevelTtd.BirthdayGreetingsKata
@@ -26,9 +27,26 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
         }
 
         [Fact]
-        public void ItWorks()
+        public async Task OneMail()
         {
-            Assert.True(true);
+            var postalOffice = new SmtpPostalOffice(SmtpHost, SmtpPort, fromAddress);
+
+            postalOffice.SendMail("Pippo", "pippo@a.com");
+
+            var serverInfo = await _smtpServer.GetServerInfo();
+            Assert.Equal(1, serverInfo.MailReceived);
+            var msg = serverInfo.Messages[0];
+
+            Assert.Equal(MailInfo(name: "Pippo", to: "pippo@a.com"), msg);
+        }
+
+        private static MailInfo MailInfo(string name, string to)
+        {
+            return new MailInfo(
+                                @from: fromAddress,
+                                to: to,
+                                subject: "Happy Birthday!",
+                                body: $"Happy Birthday, dear {name}!" + NL);
         }
     }
 }

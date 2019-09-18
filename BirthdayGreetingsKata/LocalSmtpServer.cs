@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SystemLevelTtd.BirthdayGreetingsKata
 {
-    internal class LocalSmtpServer
+    public class LocalSmtpServer
     {
         private Process smtpServerProcess;
         private string smtpHost;
@@ -52,7 +52,7 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
                 string to = msg.To[0].Mailbox + "@" + msg.To[0].Domain;
                 string subject = msg.Content.Headers.Subject[0];
                 string body = msg.Content.Body;
-                messages.Add(new MailInfo { From = @from, To = to, Subject = subject, Body = body });
+                messages.Add(new MailInfo(@from, to, subject, body));
             }
 
             return new ServerInfo
@@ -61,18 +61,56 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
                 Messages = new List<MailInfo>(messages).ToArray()
             };
         }
-        public class MailInfo
+    }
+    public class MailInfo : IEquatable<MailInfo>
+    {
+        public MailInfo(string from, string to, string subject, string body)
         {
-            public string From { get; set; }
-            public string To { get; set; }
-            public string Subject { get; set; }
-            public string Body { get; set; }
+            From = from;
+            To = to;
+            Subject = subject;
+            Body = body;
         }
 
-        public class ServerInfo
+        public string From { get; }
+        public string To { get; }
+        public string Subject { get; }
+        public string Body { get; }
+
+        public override bool Equals(object obj)
         {
-            public int MailReceived { get; set; }
-            public MailInfo[] Messages { get; set; }
+            return Equals(obj as MailInfo);
+        }
+
+        public bool Equals(MailInfo other)
+        {
+            return other != null &&
+                   From == other.From &&
+                   To == other.To &&
+                   Subject == other.Subject &&
+                   Body == other.Body;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(From, To, Subject, Body);
+        }
+
+        public static bool operator ==(MailInfo left, MailInfo right)
+        {
+            return EqualityComparer<MailInfo>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(MailInfo left, MailInfo right)
+        {
+            return !(left == right);
         }
     }
+
+    public class ServerInfo
+    {
+        public int MailReceived { get; set; }
+        public MailInfo[] Messages { get; set; }
+    }
+
 }
