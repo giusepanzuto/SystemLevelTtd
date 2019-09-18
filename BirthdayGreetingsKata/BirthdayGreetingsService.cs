@@ -8,6 +8,7 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
     public class BirthdayGreetingsService
     {
         private readonly string from;
+        private readonly SmtpPostalOffice smtpPostalOffice;
         private readonly string employeesFilename;
         private readonly string smtpHost;
         private readonly int smtpPort;
@@ -18,6 +19,8 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
             this.smtpHost = smtpHost;
             this.smtpPort = smtpPort;
             this.from = from;
+
+            this.smtpPostalOffice = new SmtpPostalOffice();
         }
 
         public void SendGreetings(DateTime today)
@@ -35,13 +38,25 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
 
                 if (employee.IsBirthday(today))
                 {
-                    var subject = "Happy Birthday!";
-                    var body = $"Happy Birthday, dear {name}!";
-
-                    using (var smtpClient = new SmtpClient(smtpHost, smtpPort))
-                        smtpClient.Send(from, to, subject, body);
+                    smtpPostalOffice.SendMail(name, to, smtpHost, smtpPort, from);
                 }
             }
+        }
+    }
+
+    public class SmtpPostalOffice
+    {
+        public SmtpPostalOffice()
+        {
+        }
+
+        public void SendMail(string name, string to, string smtpHost, int smtpPort, string from)
+        {
+            var subject = "Happy Birthday!";
+            var body = $"Happy Birthday, dear {name}!";
+
+            using (var smtpClient = new SmtpClient(smtpHost, smtpPort))
+                smtpClient.Send(@from, to, subject, body);
         }
     }
 }

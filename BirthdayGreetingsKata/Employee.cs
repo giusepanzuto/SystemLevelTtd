@@ -19,7 +19,7 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
 
         public bool IsBirthday(DateTime date)
         {
-            return this.DateOfBirth.IsBirthday(date);
+            return DateOfBirth.IsBirthday(date);
         }
     }
 }
