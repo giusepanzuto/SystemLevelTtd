@@ -8,9 +8,9 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
         private readonly SmtpPostalOffice smtpPostalOffice;
         private readonly EmployeeCsvCatalog employeeCsvCatalog;
 
-        public BirthdayGreetingsService(string employeesFilename, string smtpHost, int smtpPort, string from)
+        public BirthdayGreetingsService(string employeesFilename, SmtpPostalOffice postalOffice)
         {
-            smtpPostalOffice = new SmtpPostalOffice(smtpHost, smtpPort, from);
+            smtpPostalOffice = postalOffice;
             employeeCsvCatalog = new EmployeeCsvCatalog(employeesFilename);
         }
 
