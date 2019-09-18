@@ -17,6 +17,8 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
             return new BirthDate(DateTime.Parse(date));
         }
 
+        public override string ToString() => dateTime.ToString("yyyy-MM-dd");
+
         public override bool Equals(object obj)
         {
             return Equals(obj as BirthDate);

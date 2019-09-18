@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using SystemLevelTtd.BirthdayGreetingsKata.Adapters;
 using Xunit;
@@ -17,9 +18,8 @@ namespace SystemLevelTtd.BirthdayGreetingsKata.Tests
         [Fact]
         public void OneEmployee()
         {
-            PrepareEmployeeFile("Capone, Al, 1951-10-08, al.capone@acme.com");
-
-            var employeeCsvCatalog = new EmployeeCsvCatalog(filename);
+            var employeeCsvCatalog = EmployeeCatalogWith(
+                new Employee("Al", "Capone", BirthDate.From("1951-10-08"), "al.capone@acme.com"));
 
             var employees = employeeCsvCatalog.GetAll();
 
@@ -31,13 +31,11 @@ namespace SystemLevelTtd.BirthdayGreetingsKata.Tests
         [Fact]
         public void ManyEmployee()
         {
-            PrepareEmployeeFile(
-                "Capone, Al, 1951-10-08, al.capone@acme.com",
-                "Escobar, Pablo, 1975-09-11, pablo.escobar@acme.com",
-                "Wick, John, 1987-02-11, john.wick@acme.com"
+            var employeeCsvCatalog = EmployeeCatalogWith(
+                new Employee("Al", "Capone", BirthDate.From("1951-10-08"), "al.capone@acme.com"),
+                new Employee("Pablo", "Escobar", BirthDate.From("1975-09-11"), "pablo.escobar@acme.com"),
+                new Employee("John", "Wick", BirthDate.From("1987-09-11"), "john.wick@acme.com")
             );
-
-            var employeeCsvCatalog = new EmployeeCsvCatalog(filename);
 
             var employees = employeeCsvCatalog.GetAll();
 
@@ -48,7 +46,6 @@ namespace SystemLevelTtd.BirthdayGreetingsKata.Tests
         public void NoEmployee()
         {
             PrepareEmployeeFile();
-
             var employeeCsvCatalog = new EmployeeCsvCatalog(filename);
 
             var employees = employeeCsvCatalog.GetAll();
@@ -59,12 +56,9 @@ namespace SystemLevelTtd.BirthdayGreetingsKata.Tests
         }
 
         [Fact]
-        public void EmptyEmployee()
+        public void MissingFile()
         {
-            File.WriteAllText(filename, string.Empty);
-
             var employeeCsvCatalog = new EmployeeCsvCatalog(filename);
-
             var employees = employeeCsvCatalog.GetAll();
 
             Assert.Equal(
@@ -72,18 +66,16 @@ namespace SystemLevelTtd.BirthdayGreetingsKata.Tests
                 employees);
         }
 
-        [Fact]
-        public void MissingEmployee()
+        private static EmployeeCsvCatalog EmployeeCatalogWith(params Employee[] employees)
         {
-            var employeeCsvCatalog = new EmployeeCsvCatalog(filename);
-
-            var employees = employeeCsvCatalog.GetAll();
-
-            Assert.Equal(
-                Enumerable.Empty<Employee>(),
-                employees);
+            PrepareEmployeeFile(employees.Select(ToCsv).ToArray());
+            return new EmployeeCsvCatalog(filename);
         }
 
+        private static string ToCsv(Employee employee)
+        {
+            return $"{employee.Surname},{employee.Name},{employee.DateOfBirth},{employee.Email}";
+        }
 
         private static void PrepareEmployeeFile(params string[] contents)
         {
