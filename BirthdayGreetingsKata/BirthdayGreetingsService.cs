@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace SystemLevelTtd.BirthdayGreetingsKata
 {
@@ -13,17 +14,10 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
             employeeCsvCatalog = new EmployeeCsvCatalog(employeesFilename);
         }
 
-        public void SendGreetings(DateTime today)
-        {
-            var employees = employeeCsvCatalog.GetAll();
-
-            foreach (var employee in employees)
-            {
-                if (employee.IsBirthday(today))
-                {
-                    smtpPostalOffice.SendMail(employee.Name, employee.Email);
-                }
-            }
-        }
+        public void SendGreetings(DateTime today) => 
+            employeeCsvCatalog.GetAll()
+                .Where(e => e.IsBirthday(today))
+                .ToList()
+                .ForEach(e => smtpPostalOffice.SendMail(e.Name, e.Email));
     }
 }

@@ -14,7 +14,7 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
             this.employeesFilename = employeesFilename;
         }
 
-        private Employee ParseEmployee(string employeeLine)
+        private Employee Parse(string employeeLine)
         {
             var employeeParts = employeeLine.Split(',').Select(v => v.Trim()).ToList();
             var dateOfBirth = DateTime.Parse(employeeParts[2]);
@@ -34,7 +34,7 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
 
             var employees = File.ReadAllLines(employeesFilename)
                 .Skip(1)
-                .Select(employeeLine => ParseEmployee(employeeLine))
+                .Select(employeeLine => Parse(employeeLine))
                 .ToList();
 
             return employees;

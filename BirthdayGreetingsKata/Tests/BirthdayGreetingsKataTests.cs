@@ -41,30 +41,6 @@ namespace SystemLevelTtd.BirthdayGreetingsKata.Tests
         }
 
         [Fact]
-        public async Task OneBithday()
-        {
-            PrepareEmployeeFile(new[]
-            {
-                "Capone, Al, 1951-10-08, al.capone@acme.com",
-                "Escobar, Pablo, 1975-09-11, pablo.escobar@acme.com",
-                "Wick, John, 1987-02-11, john.wick@acme.com"
-            });
-
-            var service = new BirthdayGreetingsService(employeesFilename, SmtpHost, SmtpPort, fromAddress);
-            service.SendGreetings(new DateTime(2019, 9, 11));
-
-            var serverInfo = await _smtpServer.GetServerInfo();
-
-            Assert.Equal(1, serverInfo.MailReceived);
-
-            var msg = serverInfo.Messages[0];
-            Assert.Equal(fromAddress, msg.From);
-            Assert.Equal("pablo.escobar@acme.com", msg.To);
-            Assert.Equal("Happy Birthday!", msg.Subject);
-            Assert.Equal("Happy Birthday, dear Pablo!" + NL, msg.Body);
-        }
-
-        [Fact]
         public async Task NoBithday()
         {
             PrepareEmployeeFile(new[]
