@@ -50,7 +50,7 @@ namespace SystemLevelTtd.BirthdayGreetingsKata.Tests
                 "Wick, John, 1987-09-11, john.wick@acme.com"
             });
 
-            var service = new BirthdayGreetingsService(employeesFilename, new SmtpPostalOffice(SmtpHost, SmtpPort, fromAddress));
+            var service = new BirthdayGreetingsService(new SmtpPostalOffice(SmtpHost, SmtpPort, fromAddress), new EmployeeCsvCatalog(employeesFilename));
             service.SendGreetings(new DateTime(2019, 2, 26));
 
             var serverInfo = await _smtpServer.GetServerInfo();
@@ -68,7 +68,7 @@ namespace SystemLevelTtd.BirthdayGreetingsKata.Tests
                 "Wick, John, 1987-09-11, john.wick@acme.com"
             });
 
-            var service = new BirthdayGreetingsService(employeesFilename, new SmtpPostalOffice(SmtpHost, SmtpPort, fromAddress));
+            var service = new BirthdayGreetingsService(new SmtpPostalOffice(SmtpHost, SmtpPort, fromAddress), new EmployeeCsvCatalog(employeesFilename));
             service.SendGreetings(new DateTime(2019, 9, 11));
 
             var serverInfo = await _smtpServer.GetServerInfo();
