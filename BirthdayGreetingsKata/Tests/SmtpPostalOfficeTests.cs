@@ -9,8 +9,8 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
     public class SmtpPostalOfficeTests : IDisposable
     {
         private readonly LocalSmtpServer _smtpServer;
-        private const int SmtpPort = 1040;
-        private const int ApiPort = 1041;
+        private const int SmtpPort = 1060;
+        private const int ApiPort = 1061;
         private const string SmtpHost = "localhost";
         private const string NL = "\r\n";
         private const string fromAddress = "greetings@acme.com";
@@ -40,13 +40,11 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
             Assert.Equal(MailInfo(name: "Pippo", to: "pippo@a.com"), msg);
         }
 
-        private static MailInfo MailInfo(string name, string to)
-        {
-            return new MailInfo(
-                                @from: fromAddress,
-                                to: to,
-                                subject: "Happy Birthday!",
-                                body: $"Happy Birthday, dear {name}!" + NL);
-        }
+        private static MailInfo MailInfo(string name, string to) => 
+            new MailInfo(
+                @from: fromAddress,
+                to: to,
+                subject: "Happy Birthday!",
+                body: $"Happy Birthday, dear {name}!" + NL);
     }
 }
