@@ -27,6 +27,9 @@ namespace SystemLevelTtd.BirthdayGreetingsKata
 
         public List<Employee> GetAll()
         {
+            if (!File.Exists(employeesFilename))
+                return new List<Employee>();
+
             var allLines = File.ReadAllLines(employeesFilename).Skip(1).ToList();
 
             var employees = File.ReadAllLines(employeesFilename)
